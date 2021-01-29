@@ -120,7 +120,7 @@ class UserController extends Controller
 
         if ($user == null) {
             return response()->json([
-                'message' => 'User Not Found'
+                'error' => 'User Not Found'
             ], 400);
         }
 

@@ -16,7 +16,7 @@ class UserScope
     public function handle($request, Closure $next, $role)
     {
         if (! $request->user()->hasRole($role)) {
-            return response()->json(['Message' => 'Permission Denied.'], 403);
+            return response()->json(['error' => 'Permission Denied.'], 403);
         }
         return $next($request);
     }
