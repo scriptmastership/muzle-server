@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -27,12 +28,23 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $user = User::where('name', $request->name)->first();
+        $validator = Validator::make($request->all(), [
+            'nickname' => 'required|exists:users',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $user = User::where('nickname', $request->nickname)->first();
         if (!Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $token = auth()->login($user);
-        return $this->respondWithToken($token, $user);       
+        return $this->respondWithToken($token, $user);
     }
 
     /**
