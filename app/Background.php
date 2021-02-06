@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Background extends Model
 {
     public function games()
     {
-        return $this->belongsToMany(Category::class, 'game_category');
+        return $this->belongsToMany(Background::class, 'game_background');
     }
 }

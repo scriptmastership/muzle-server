@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Image;
+use App\Background;
 
-class ImageController extends Controller
+class BackgroundController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class ImageController extends Controller
      */
     public function index()
     {
-        $images = Image::all();
-        return response()->json($images);
+        $backgrounds = Background::all();
+        return response()->json($backgrounds);
     }
 
     /**
@@ -41,12 +41,12 @@ class ImageController extends Controller
 
         $path = $request->src->store('image');
 
-        $image = new Image;
-        $image->name = $request->name;
-        $image->src = $path;
-        $image->save();
+        $background = new Background;
+        $background->name = $request->name;
+        $background->src = $path;
+        $background->save();
 
-        return response()->json($image);
+        return response()->json($background);
     }
 
     /**
@@ -57,34 +57,8 @@ class ImageController extends Controller
      */
     public function show($id)
     {
-        $image = Image::find($id);
-        return response()->json($image);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'categoryId' => 'required|exists:categories,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
-        }
-
-        $image = Image::find($id);
-        $image->category_id = $request->categoryId;
-        $image->save();
-
-        return response()->json($image);
+        $background = Background::find($id);
+        return response()->json($background);
     }
 
     /**
@@ -95,16 +69,16 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        $image = Image::find($id);
+        $background = Background::find($id);
 
-        if ($image == null) {
+        if ($background == null) {
             return response()->json([
                 'error' => 'Not Found'
             ], 400);
         }
 
-        $image->delete();
+        $background->delete();
 
-        return response()->json($image);
+        return response()->json($background);
     }
 }

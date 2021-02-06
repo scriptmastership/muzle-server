@@ -113,7 +113,7 @@ class TenantController extends Controller
 
         if ($tenant == null) {
             return response()->json([
-                'error' => 'Tenant Not Found'
+                'error' => 'Not Found'
             ], 400);
         }
 
