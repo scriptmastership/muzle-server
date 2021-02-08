@@ -87,12 +87,6 @@ class GameController extends Controller
             ], 400);
         }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
-        }
-
         $game = Game::find($id);
         if ($request->name) {
             $game->name = $request->name;
@@ -108,6 +102,34 @@ class GameController extends Controller
             $game->categories()->detach();
             $game->categories()->attach($request->categories);
         }
+        $game->save();
+
+        return response()->json($game);
+    }
+
+    /**
+     * Add helper image to Game
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addHelper(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'src' => 'required|image:png',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $path = $request->src->store('helpers');
+
+        $game = Game::find($id);
+        $game->src = $path;
         $game->save();
 
         return response()->json($game);
