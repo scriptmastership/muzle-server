@@ -14,7 +14,7 @@ class AddHelperToGame extends Migration
     public function up()
     {
         Schema::table('games', function (Blueprint $table) {
-            $table->string('helper');
+            $table->string('helper')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddHelperToGame extends Migration
      */
     public function down()
     {
-        Schema::table('game', function (Blueprint $table) {
-            //
+        Schema::table('games', function (Blueprint $table) {
+            $table->dropColumn('helper');
         });
     }
 }
