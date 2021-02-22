@@ -54,7 +54,13 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+        return response()->json(
+            [
+                'name' => $user->name,
+                'role' => $user->role
+            ]
+        );
     }
 
     /**
@@ -93,7 +99,8 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user' => [
-                'name' => $user->name
+                'name' => $user->name,
+                'role' => $user->role
             ]
         ]);
     }
