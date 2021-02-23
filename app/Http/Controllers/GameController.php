@@ -78,7 +78,7 @@ class GameController extends Controller
     public function show($id)
     {
         $game = Game::find($id);
-        $backgrounds = $game->backgrounds();
+        $backgrounds = $game->backgrounds()->get();
         $categories = $game->categories()->with('images')->get();
         return response()->json([
             'game' => $game,
