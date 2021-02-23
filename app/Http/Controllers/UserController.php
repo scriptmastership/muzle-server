@@ -61,6 +61,7 @@ class UserController extends Controller
         $user->role = $request->role;
         $user->password = Hash::make($request->password);
         $user->save();
+        $user = User::with('tenant')->find($user->id);
 
         return response()->json([
             'user' => $user
