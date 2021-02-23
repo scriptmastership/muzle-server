@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Image;
+use App\Category;
 
 class ImageController extends Controller
 {
@@ -17,7 +19,11 @@ class ImageController extends Controller
     public function index()
     {
         $images = Image::all();
-        return response()->json($images);
+        $categories = Category::all();
+        return response()->json([
+            'images' => $images,
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -29,8 +35,9 @@ class ImageController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'src' => 'required|image:png',
+            'category_id' => 'required|exists:categories,id',
+            'images' => 'required',
+            'images.*' => 'required|image:png',
         ]);
 
         if ($validator->fails()) {
@@ -39,14 +46,21 @@ class ImageController extends Controller
             ], 400);
         }
 
-        $path = $request->src->store('image');
+        $images = [];
 
-        $image = new Image;
-        $image->name = $request->name;
-        $image->src = $path;
-        $image->save();
+        foreach ($request->images as $img) {
+            $path = $img->store('image');
+            $image = new Image;
+            $image->name = Str::random(16);
+            $image->src = $path;
+            $image->category_id = (int)$request->category_id;
+            $image->save();
+            array_push($images, $image);
+        }
 
-        return response()->json($image);
+        return response()->json([
+            'images' => $images
+        ]);
     }
 
     /**
