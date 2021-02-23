@@ -17,7 +17,9 @@ class BackgroundController extends Controller
     public function index()
     {
         $backgrounds = Background::all();
-        return response()->json($backgrounds);
+        return response()->json([
+            'backgrounds' => $backgrounds
+        ]);
     }
 
     /**
@@ -39,14 +41,16 @@ class BackgroundController extends Controller
             ], 400);
         }
 
-        $path = $request->src->store('image');
+        $path = $request->src->store('background');
 
         $background = new Background;
         $background->name = $request->name;
         $background->src = $path;
         $background->save();
 
-        return response()->json($background);
+        return response()->json([
+            'background' => $background
+        ]);
     }
 
     /**
