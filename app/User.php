@@ -61,4 +61,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return User::where('role', $role)->first();
     }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 }

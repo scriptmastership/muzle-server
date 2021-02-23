@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use App\User;
+use App\Tenant;
 
 class UserController extends Controller
 {
@@ -17,9 +18,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('role', '!=', 'admin')->get();
+        $users = User::with('tenant')
+            ->where('role', '!=', 'admin')
+            ->orderBy('name')
+            ->get();
+        $tenants = Tenant::all();
         return response()->json([
-            'users' => $users
+            'users' => $users,
+            'tenants' => $tenants
         ]);
     }
 
