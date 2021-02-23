@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use App\Game;
 use App\Category;
 use App\Background;
+use App\Image;
 
 class GameController extends Controller
 {
@@ -77,7 +78,13 @@ class GameController extends Controller
     public function show($id)
     {
         $game = Game::find($id);
-        return response()->json($game);
+        $backgrounds = $game->backgrounds();
+        $categories = $game->categories()->with('images')->get();
+        return response()->json([
+            'game' => $game,
+            'backgrounds' => $backgrounds,
+            'categories' => $categories
+        ]);
     }
 
     /**

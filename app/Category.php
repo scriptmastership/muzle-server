@@ -10,4 +10,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Category::class, 'game_category');
     }
+
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
 }
