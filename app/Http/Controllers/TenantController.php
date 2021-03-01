@@ -113,7 +113,13 @@ class TenantController extends Controller
 
         if ($tenant == null) {
             return response()->json([
-                'error' => 'Not Found'
+                'errors' => ['Not Found']
+            ], 400);
+        }
+        
+        if (count($tenant->users()->get()) > 0) {
+            return response()->json([
+                'errors' => ['All connected users need to be deleted before']
             ], 400);
         }
 
