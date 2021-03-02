@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function() {
     
+    Route::post('login_admin', 'AuthController@login_admin');
     Route::post('login', 'AuthController@login');
     
     Route::middleware(['auth:api'])->group(function() {
@@ -39,4 +40,8 @@ Route::prefix('user')->group(function() {
     Route::middleware(['auth:api'])->group(function() {
         Route::get('games/{id}', 'GameController@show')->middleware('userscope:kid,teacher');
     });
+});
+
+Route::prefix('public')->group(function() {
+    Route::get('tenants', 'TenantController@index');
 });

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Tenant;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,6 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -27,6 +27,37 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'tenant' => 'required|exists:users,tenant_id',
+            'nickname' => 'required|exists:users,nickname',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $user = User::where(
+            ['tenant_id', '=', $request->tenant],
+            ['nickname', '=', $request->nickname]
+        )->first();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $token = auth()->login($user);
+        return $this->respondWithToken($token, $user);
+    }
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function login_admin(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nickname' => 'required|exists:users',
