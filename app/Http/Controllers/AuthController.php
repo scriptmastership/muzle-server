@@ -71,9 +71,10 @@ class AuthController extends Controller
         }
 
         $user = User::where('nickname', $request->nickname)->first();
-        if (!Hash::check($request->password, $user->password)) {
+        if ($user->role !== 'admin' || !Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+        
         $token = auth()->login($user);
         return $this->respondWithToken($token, $user);
     }
