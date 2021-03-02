@@ -13,10 +13,10 @@ class UserScope
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
     {
-        if (! $request->user()->hasRole($role)) {
-            return response()->json(['error' => 'Permission Denied.'], 403);
+        if (!in_array($request->user()->role, $roles)) {
+            return response()->json(['error' => $roles], 403);
         }
         return $next($request);
     }

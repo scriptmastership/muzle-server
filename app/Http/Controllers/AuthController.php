@@ -40,10 +40,10 @@ class AuthController extends Controller
             ], 400);
         }
 
-        $user = User::where(
-            ['tenant_id', '=', $request->tenant],
-            ['nickname', '=', $request->nickname]
-        )->first();
+        $user = User::where([
+            'tenant_id'=> $request->tenant,
+            'nickname' => $request->nickname
+        ])->first();
 
         if (!Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'Unauthorized'], 401);
