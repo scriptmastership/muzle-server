@@ -39,7 +39,11 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'nickname' => 'required|unique:users,nickname',
+            'nickname' => [
+                'required',
+                Rule::unique('users','nickname')
+                    ->where('tenant_id', $request->tenant_id)
+            ],
             'role' => [
                 'required',
                 Rule::in(['teacher', 'kid']),
@@ -91,11 +95,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = User::find($id);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'nickname' => [
                 'required',
-                Rule::unique('users')->ignore($id),
+                Rule::unique('users','nickname')
+                    ->where('tenant_id', $user->tenant_id)
+                    ->ignore($user->id, 'id')
             ],
         ]);
 
@@ -105,7 +113,7 @@ class UserController extends Controller
             ], 400);
         }
 
-        $user = User::find($id);
+        
         $user->name = $request->name;
         $user->nickname = $request->nickname;
         $user->save();
