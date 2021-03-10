@@ -38,6 +38,7 @@ Route::prefix('admin')->group(function() {
 
 Route::prefix('user')->group(function() {
     Route::middleware(['auth:api'])->group(function() {
+        Route::get('games', 'GameController@index')->middleware('userscope:kid,teacher');
         Route::get('games/{id}', 'GameController@show')->middleware('userscope:kid,teacher');
     });
 });
